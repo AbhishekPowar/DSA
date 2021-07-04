@@ -1,12 +1,3 @@
-from copy import deepcopy
-import time
-
-
-class gz():
-    solutionCount = 0
-    solution = []
-
-
 def checkBoard(board, row, col):
     N = len(board) - 1
     # same row check can be skipped
