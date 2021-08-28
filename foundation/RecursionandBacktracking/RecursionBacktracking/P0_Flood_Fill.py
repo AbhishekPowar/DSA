@@ -1,33 +1,37 @@
 class Solution():
 
-    def floodFill(self, image, sr, sc, newColor):
-        def floodFillImpl(image, sr, sc, newColor, oldColour, M, N):
-            seen.add((sr, sc))
-            if 0 <= sr < M and 0 <= sc < N and image[sr][sc] == oldColour:
-                image[sr][sc] = newColor
-                for x, y in ((-1, 0), (0, -1), (1, 0), (0, 1)):
-                    if ((sr+x), (sc+y)) not in seen:
-                        floodFillImpl(image, sr+x, sc+y,
-                                      newColor, oldColour, M, N)
-        M = len(image)
-        N = len(image[0])
-        seen = set()
-        oldColour = image[sr][sc]
-        floodFillImpl(image, sr, sc, newColor, oldColour, M, N)
-        return image
+    def floodFill(self, maze, sr, sc, path):
+
+        # @staticmethod
+        def floodFillImpl(maze, r, c, path, visited):
+            if r == sr-1 and c == sc - 1:
+                answers.append(path)
+            else:
+                directions = ((0, -1, 't'), (-1, 0, 'l'),
+                              (0, 1, 'd'), (1, 0, 'r'))
+                visited.add((r, c))
+                for x, y, ch in directions:
+                    nr, nc = ((r+y), (c+x))
+                    if 0 <= nr < sr and 0 <= nc < sc and maze[nr][nc] == 0:
+                        if (nr, nc) not in visited:
+                            floodFillImpl(maze, nr, nc, path +
+                                          ch, visited.copy())
+        answers = []
+        floodFillImpl(maze, 0, 0, '', set())
+        return answers
 
 
 if __name__ == "__main__":
-    image = [
-            [1, 0, 1],
-            [1, 1, 1],
-            [1, 0, 1]]
-    image = [
-            [0, 0, 0],
-            [0, 0, 0]
+    # rows,columns = [int(x) for x in input().split(' ')]
+    maze = [
+        [0, 0, 0, 0],
+        [0, 0, 1, 0],
+        [0, 1, 1, 0],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0]
     ]
-    sr = 0
-    sc = 0
-    newColor = 2
-    outputImage = Solution().floodFill(image, sr, sc, newColor)
-    [print(x) for x in outputImage]
+    # maze = [[int(x) for i in input().split(' ')] for x in range(rows)]
+    sr = len(maze)
+    sc = len(maze[0])
+    output = Solution().floodFill(maze, sr, sc, '')
+    [print(out) for out in output]
