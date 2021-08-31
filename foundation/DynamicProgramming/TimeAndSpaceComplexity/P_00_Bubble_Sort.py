@@ -14,4 +14,4 @@ if __name__ == "__main__":
     # count = int(input())
     # nums = [int(input()) for _ in range(count)]
     bubbleSort(nums)
-    print(nums)
+    [print(n) for n in nums]
