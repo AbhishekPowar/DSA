@@ -1,32 +1,52 @@
-# Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
-
-# The solution set must not contain duplicate subsets. Return the solution in any order.
+from typing import List
 
 
-# Example 1:
-
-# Input: nums = [1,2,2]
-# Output: [[],[1],[1,2],[1,2,2],[2],[2,2]]
 class Solution:
+    def subsetsWithDupRecursive(self, nums):
+        self.allSubsets = set()
+        nums.sort()
+        self.calcSubset(nums, 0, len(nums), [])
+        return self.allSubsets
+
+    def calcSubset(self, nums,  idx, lenOfNums, temp):
+        if idx < lenOfNums:
+            self.calcSubset(nums, idx+1, lenOfNums, temp[:])
+            temp.append(nums[idx])
+            self.calcSubset(nums, idx+1, lenOfNums, temp[:])
+        else:
+            self.allSubsets.add(tuple(temp))
+
+    def subsetsWithDupBitMap(self, nums):
+        allSubsets = set()
+        nums.sort()
+        N = len(nums)
+        for n in range(2**N):
+            binaryRepr = bin(n)[2:]
+            subset = []
+            for idx, bit in enumerate(binaryRepr[::-1]):
+                if bit == '1':
+                    subset.append(nums[idx])
+            allSubsets.add(tuple(subset))
+        return allSubsets
+
     def subsetsWithDup(self, nums):
-        '''Return list of subsets'''
-        output = set()
+        self.allSubsets = []
+        self.backtractHelper(nums, 0, len(nums), [])
+        return self.allSubsets
 
-        def subsetsWithDupImpl(nums, temp):
-            if nums:
-                subsetsWithDupImpl(nums[1:], temp[:]+[nums[0]])
-                subsetsWithDupImpl(nums[1:], temp[:])
-            else:
-                output.add(tuple(temp))
-        subsetsWithDupImpl(sorted(nums), [])
-        return output
-
-
-def main():
-    ar = [1, 2, 3]
-    output = Solution().subsetsWithDup(ar)
-    print(output)
+    def backtractHelper(self, nums, idx, lenOfNums, temp):
+        self.allSubsets.append(temp[:])
+        if idx < lenOfNums:
+            for i in range(idx, lenOfNums):
+                if i > idx and nums[i] == nums[i-1]:
+                    continue
+                temp.append(nums[i])
+                self.backtractHelper(nums, i+1, lenOfNums, temp)
+                temp.pop()
 
 
 if __name__ == "__main__":
-    main()
+    # [[],[1],[1,2],[1,2,2],[2],[2,2]]
+    nums = [1, 2, 2, 2, 2]
+    output = Solution().subsetsWithDup(nums)
+    print(output)
